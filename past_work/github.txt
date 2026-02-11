@@ -1,0 +1,21 @@
+- https://arxiv.org/pdf/2506.04651
+
+- https://web.stanford.edu/class/archive/cs/cs221/cs221.1192/2018/restricted/posters/wlauer/poster.pdf
+
+- https://github.com/Harry55494/Conquerors-of-Catan
+
+https://ai.stackexchange.com/questions/16036/how-to-calculate-the-optimal-placements-for-settlements-in-catan-without-an-ml-a
+
+https://akrishna77.github.io/QSettlers/
+
+https://sidhardhburre.com/CS6501RL/final.pdf
+
+https://www.sbgames.org/sbgames2017/papers/ComputacaoFull/175405.pdf
+
+https://github.com/bcollazo/catanatron
+
+https://github.com/bcollazo/catanatron/tree/master/catanatron_experimental/catanatron_experimental/machine_learning/players
+
+https://medium.com/@bcollazo2010/5-ways-not-to-build-a-catan-ai-e01bc491af17
+
+
