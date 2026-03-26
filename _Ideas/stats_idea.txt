@@ -13,20 +13,23 @@
 ----
 
 - for each game
-    - number of different resources per player
+
     - number of settlements per player
     - number of cities per player
+    - number of roads built per player
     - number of trades with the bank per player
     - number of trades initiated with others per player
     - number of trades taken per player
+    - number of development cards per player
+
+    - number of different resources per player
     - number of cards lost during trades
     - number of cards gained during trades
-    - number of turns before trade proposed (count trades)
-    - number of successful trades per player (how many trades initiated that were taken)
+    - number of turns before FIRST trade proposed (count number of empty divs (with just a line) before)
     - number of resources lost when player rolled a 7
+    
+    - number of successful trades per player (how many trades initiated that were taken)
     - number of counter offers made per player
-    - number of roads built per player
-    - number of development cards per player
     - number of times getting longest road
     - number of times getting largest army
     - number of players stolen from when rolling a 7 or using a knight (unique count: if i steal from same person twice, it should only count as 1)
