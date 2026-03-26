@@ -207,3 +207,4 @@ marimo/_lsp/
 __marimo__/
 
 data/raw_divs/*.txt
+data/game_log_dfs/*.csv
