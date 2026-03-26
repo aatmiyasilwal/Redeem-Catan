@@ -85,3 +85,11 @@
 
 - longest road passde from _ to _ 
 <div data-index="384" class="scrollItemContainer-WXX2rkzf" style="transform: translateY(10424px);"><div class="feedMessage-O8TLknGe" style="opacity: 1;"><div class="container-k26ZLqas hideBackground-tkyRocbV avatar-yelUykqb"><img draggable="false" class="avatarImage-JNCoQelY undefined" src="https://cdn.colonist.io/dist/assets/icon_bot.fe8fdd5cc98ae77d7774.svg"></div><span class="messagePart-XeUsOgLX">Longest Road <img src="https://cdn.colonist.io/dist/assets/icon_longest_road.5cfdeb3352b20463e64b.svg" alt="longest road" height="20" width="20" class="lobby-chat-text-icon"> passed from <span style="font-weight:600;word-break:break-all;color:#223697">Dottie</span> to <span style="font-weight:600;word-break:break-all;color:#E09742">Pliske</span> (<span class="vp-text">+2 VPs</span>)</span></div></div>
+
+- _ blocked trading with _
+<div data-index="479" class="scrollItemContainer-WXX2rkzf" style="transform: translateY(19986px);"><div class="feedMessage-O8TLknGe" style="opacity: 1;"><div class="container-k26ZLqas hideBackground-tkyRocbV avatar-yelUykqb"><img draggable="false" class="avatarImage-JNCoQelY" src="https://cdn.colonist.io/dist/assets/icon_player_loggedin.88be0a3c581efb9f2d3a.svg"></div><span class="messagePart-XeUsOgLX"><span style="font-weight:600;word-break:break-all;color:#223697">Ricker2484</span> blocked trading with <span style="font-weight:600;word-break:break-all;color:#E27174">arinp24</span></span></div></div>
+
+- for end of turn count (empty div)
+
+<div data-index="106" class="scrollItemContainer-WXX2rkzf" style="transform: translateY(2327px);"><div class="feedMessage-O8TLknGe" style="opacity: 1;"><span class="messagePart-XeUsOgLX"><hr></span></div></div>
+
