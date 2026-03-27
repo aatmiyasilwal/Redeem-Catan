@@ -1,14 +1,19 @@
-- Turns before trade proposed
+- Average turns before first trade proposed
+- Most common starting resources (top 3)
 - Average ratio of cards given : cards taken per trade
-- Number of counter offers
+- Trade success rate: trades proposed/trades taken
+- Counter offers per game
+- Average trades with bank
+- Average number of counter offers
 - Avg. development cards bought
 - Avg. roads builts
 - Avg. cities built
 - Aerage trades with bank
-- number of players targeted (stolen from) per game -- lower = more targeting
-- Average number of discards per game
-- Number of times getting largest army
-- Number of times getting longest road
+- Average number of players targeted (stolen from) -- lower entails more targeting
+- Number of times getting targetted by other players
+- Average number of cards discarded (After a 7 roll) per game
+- Number of times getting largest army / number of times played
+- Number of times getting longest road / number of times played
 
 ----
 
