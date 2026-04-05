@@ -1,15 +1,18 @@
 # 54.6% win rate, 7.48 avg VP against the default opponents in catanatron_gym:catanatron-v1 (unwrapped)
 
+import argparse
+import json
 import polars as pl
 from pathlib import Path
 from datetime import datetime
 from tqdm import tqdm
 from sb3_contrib import MaskablePPO
-from train import create_masked_env
+from train import make_create_masked_env
 
 
-def eval_agent(model_path: str, n_games: int = 500, out_filename: str = "baseline.csv"):
-    env = create_masked_env()
+def eval_agent(model_path: str, opponents: list, n_games: int = 500, out_filename: str = "baseline.csv"):
+    env_fn = make_create_masked_env(opponents)
+    env = env_fn()
 
     print(f"Loading model from {model_path}...")
     model = MaskablePPO.load(model_path)
@@ -71,17 +74,40 @@ def eval_agent(model_path: str, n_games: int = 500, out_filename: str = "baselin
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Evaluate Catanatron PPO Agent")
+    parser.add_argument("-p", "--players", type=str, required=True, metavar="P0,P1,P2",
+                        help="Comma-separated list of 3 player indices, eg: 0,1,2")
+    args = parser.parse_args()
+
+    indices = sorted([int(x.strip()) for x in args.players.split(',')])
+    if len(indices) != 3:
+        raise ValueError("Must provide exactly 3 player indices.")
+
+    index_path = Path(__file__).resolve().parent.parent.parent / \
+        "data" / "player_profiles" / "player_index.json"
+    with open(index_path, 'r') as f:
+        player_map = json.load(f)
+
+    reverse_map = {int(v): k for k, v in player_map.items()}
+    opponents = []
+    for idx in indices:
+        if idx not in reverse_map:
+            raise ValueError(
+                f"Index {idx} not valid. Valid indices: {list(reverse_map.keys())}")
+        opponents.append(reverse_map[idx])
+
+    suffix = "".join(str(idx) for idx in indices)
+
     # Ensure the model exists before running
-    baseline_path = Path("models/baseline_ppo.zip")
+    baseline_path = Path(f"models/baseline_ppo_{suffix}.zip")
     if baseline_path.exists():
         # Generate timestamp in MMDD_HHMMSS format
         timestamp = datetime.now().strftime("%m%d_%H%M%S")
-        export_name = f"{timestamp}_baseline.csv"
+        export_name = f"{timestamp}_baseline_{suffix}.csv"
 
-        eval_agent(str(baseline_path), n_games=500, out_filename=export_name)
+        eval_agent(str(baseline_path), opponents=opponents,
+                   n_games=500, out_filename=export_name)
     else:
         print(
-            f"Could not find {baseline_path} - did you finish training the baseline in train.py?")
-
-
-
+            f"Could not find {baseline_path} - did you finish training the baseline in train.py with these players?")
