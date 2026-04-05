@@ -1,3 +1,5 @@
+# 54.6% win rate, 7.48 avg VP against the default opponents in catanatron_gym:catanatron-v1 (unwrapped)
+
 import polars as pl
 from pathlib import Path
 from datetime import datetime
@@ -80,3 +82,6 @@ if __name__ == "__main__":
     else:
         print(
             f"Could not find {baseline_path} - did you finish training the baseline in train.py?")
+
+
+
