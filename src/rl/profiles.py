@@ -17,16 +17,17 @@ class ProfileManager:
         return cls._instance
 
     def _load_data(self):
-        # Resolve data directory relative to this script: src/rl/profiles.py -> ../../data
-        data_dir = Path(__file__).resolve().parent.parent.parent / "data"
+        # Resolve data directory relative to this script: src/rl/profiles.py -> ../../data/player_profiles
+        data_dir = Path(__file__).resolve(
+        ).parent.parent.parent / "data" / "player_profiles"
 
         profiles_path = data_dir / "profiles.npy"
-        index_path = data_dir / "player_index.json"
+        index_path = data_dir / "profile_index.json"
 
         if not profiles_path.exists() or not index_path.exists():
             raise FileNotFoundError(
                 f"Profile data not found. Please ensure both 'profiles.npy' and "
-                f"'player_index.json' exist in the {data_dir} directory."
+                f"'profile_index.json' exist in the {data_dir} directory."
             )
 
         # 1. Load the core numpy data into memory
@@ -53,7 +54,6 @@ class ProfileManager:
             return self.profiles_array[idx]
         else:
             return self.median_profile
-
 
 
 # public API
