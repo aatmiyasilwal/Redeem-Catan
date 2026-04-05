@@ -1,7 +1,7 @@
 [project]
-name = "eda"
+name = "Aatmiya-FYP"
 version = "0.1.0"
-description = "Add your description here"
+description = "Traditional Catan Bots, but smarter"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
