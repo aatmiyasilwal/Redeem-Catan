@@ -211,3 +211,5 @@ data/game_log_dfs/*.parquet
 
 data/player_profiles/*.json
 data/player_profiles/*.npy
+
+src/rl/models/baseline_ppo.zip
