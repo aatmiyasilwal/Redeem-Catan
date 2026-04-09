@@ -1,4 +1,4 @@
-# 54.6% win rate, 7.48 avg VP against the default opponents in catanatron_gym:catanatron-v1 (unwrapped)
+# (012) 49% win rate, 7.41 avg VP against the default opponents in catanatron_gym:catanatron-v1 (unwrapped)
 
 import argparse
 import json
