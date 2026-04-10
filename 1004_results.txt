@@ -1,0 +1,55 @@
+==============================
+EVALUATION RESULTS
+==============================
+Model    : models/shuffled_ppo_all.zip
+Games    : 500
+Win Rate : 43.0%
+Avg VP   : 6.00
+Saved to : results/0410_184612_shuffled_all.csv
+
+---
+==============================
+EVALUATION RESULTS
+==============================
+Model    : models/aware_ppo_all.zip
+Games    : 500
+Win Rate : 49.2%
+Avg VP   : 7.28
+Saved to : results/0410_185416_aware_all.csv
+==============================
+
+----
+
+==============================
+EVALUATION RESULTS
+==============================
+Model    : models/aware_ppo_012.zip
+Games    : 500
+Win Rate : 50.8%
+Avg VP   : 7.05
+Saved to : results/0410_190540_aware_012.csv
+==============================
+
+---
+
+==============================
+EVALUATION RESULTS
+==============================
+Model    : models/baseline_ppo_012.zip
+Games    : 500
+Win Rate : 51.2%
+Avg VP   : 7.22
+Saved to : results/0410_184527_baseline_012.csv
+==============================
+
+---
+
+==============================
+EVALUATION RESULTS
+==============================
+Model    : models/aware_ppo_013.zip
+Games    : 500
+Win Rate : 54.2%
+Avg VP   : 7.37
+Saved to : results/0410_201226_aware_013.csv
+==============================

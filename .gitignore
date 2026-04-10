@@ -213,3 +213,7 @@ data/player_profiles/*.json
 data/player_profiles/*.npy
 
 src/rl/models/baseline_ppo_*.zip
+src/rl/models/aware_ppo_*.zip
+src/rl/models/shuffled_ppo_*.zip
+
+1004_checkpoint.md
