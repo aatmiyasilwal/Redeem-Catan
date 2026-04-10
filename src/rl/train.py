@@ -17,10 +17,10 @@ def mask_fn(env: gym.Env) -> np.ndarray:
     return mask
 
 
-def make_create_masked_env(opponents):
+def make_create_masked_env(opponents, mode="baseline"):
     """Factory builder for creating masked envs with specific opponents."""
     def _create_masked_env():
-        env = make_env(opponents)
+        env = make_env(opponents, mode=mode)
         env = ActionMasker(env, mask_fn)
         return env
     return _create_masked_env
@@ -28,43 +28,39 @@ def make_create_masked_env(opponents):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train Catanatron PPO Agent")
-    parser.add_argument("-p", "--players", type=str, required=True, metavar="P0,P1,P2",
-                        help="Comma-separated list of 3 player indices, eg: 0,1,2")
+    parser.add_argument("-p", "--players", type=str, default="", metavar="P0,P1,P2",
+                        help="Comma-separated list of 3 player indices, eg: 0,1,2 (Optional for aware/shuffled)")
     parser.add_argument("-m", "--mode", type=str, choices=["b", "a", "s"], default="b",
                         help="Training mode: b (baseline), a (aware), s (shuffled)")
     args = parser.parse_args()
 
-    indices = sorted([int(x.strip()) for x in args.players.split(',')])
-    if len(indices) != 3:
-        raise ValueError("Must provide exactly 3 player indices.")
+    if args.mode == "b" and not args.players:
+        raise ValueError("Must provide -p for baseline mode.")
 
-    index_path = Path(__file__).resolve().parent.parent.parent / \
-        "data" / "player_profiles" / "player_index.json"
-    with open(index_path, 'r') as f:
-        player_map = json.load(f)
-
-    reverse_map = {int(v): k for k, v in player_map.items()}
     opponents = []
-    for idx in indices:
-        if idx not in reverse_map:
-            raise ValueError(
-                f"Index {idx} not valid. Valid indices: {list(reverse_map.keys())}")
-        opponents.append(reverse_map[idx])
+    indices = []
+    if args.players:
+        indices = sorted([int(x.strip()) for x in args.players.split(',')])
+        if len(indices) != 3:
+            raise ValueError("Must provide exactly 3 player indices.")
+
+        index_path = Path(__file__).resolve().parent.parent.parent / \
+            "data" / "player_profiles" / "player_index.json"
+        with open(index_path, 'r') as f:
+            player_map = json.load(f)
+
+        reverse_map = {int(v): k for k, v in player_map.items()}
+        for idx in indices:
+            if idx not in reverse_map:
+                raise ValueError(
+                    f"Index {idx} not valid. Valid indices: {list(reverse_map.keys())}")
+            opponents.append(reverse_map[idx])
 
     # Create directory for saving models
     models_dir = Path("models")
     models_dir.mkdir(exist_ok=True)
 
-    print(f"Initializing environment with opponents: {opponents}...")
-    # Vectorize the environment (running 4 parallel environments speeds up training drastically)
-    env_fn = make_create_masked_env(opponents)
-    vec_env = DummyVecEnv([env_fn for _ in range(4)])
-
-    print("Loading Maskable PPO Model...")
-    # Initialize Maskable PPO Model
-    model = MaskablePPO("MlpPolicy", vec_env, verbose=1)
-
-    suffix = "".join(str(idx) for idx in indices)
+    suffix = "".join(str(idx) for idx in indices) if indices else "all"
 
     if args.mode == "b":
         prefix = "baseline"
@@ -74,6 +70,16 @@ if __name__ == "__main__":
         prefix = "shuffled"
     else:
         prefix = "baseline"
+
+    print(
+        f"Initializing environment with opponents: {opponents} (mode: {prefix})...")
+    # Vectorize the environment (running 4 parallel environments speeds up training drastically)
+    env_fn = make_create_masked_env(opponents, mode=prefix)
+    vec_env = DummyVecEnv([env_fn for _ in range(4)])
+
+    print("Loading Maskable PPO Model...")
+    # Initialize Maskable PPO Model
+    model = MaskablePPO("MlpPolicy", vec_env, verbose=1)
 
     # print("Starting 50k validation run...")
     # # Train Tiny PPO (Sanity Check)

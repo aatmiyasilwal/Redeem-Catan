@@ -17,13 +17,28 @@ class OpponentProfileWrapper(gym.ObservationWrapper):
         self.opponent_names = opponent_names
         self.mode = mode
 
-        # Load the feature vectors for the initial/baseline opponents
-        vectors = [get_profile_vector(name) for name in opponent_names]
-        self.current_features = np.concatenate(vectors).astype(np.float32)
+        # Load player mapping (fixed indices for slot masking)
+        index_path = Path(__file__).resolve().parent.parent.parent / \
+            "data" / "player_profiles" / "player_index.json"
+        with open(index_path, 'r') as f:
+            self.player_map = json.load(f)
+        self.all_opponents = list(self.player_map.keys())
+        self.num_total_players = len(self.all_opponents)
+        self.profile_dim = get_profile_dim()
 
-        # Expand the observation space dimension
         base_shape = env.observation_space.shape[0]
-        new_dim = base_shape + len(self.current_features)
+
+        if self.mode == "baseline":
+            # Baseline: tight compact array of exactly 3 players
+            vectors = [get_profile_vector(name)
+                       for name in self.opponent_names]
+            self.current_features = np.concatenate(vectors).astype(np.float32)
+            new_dim = base_shape + len(self.current_features)
+        else:
+            # Aware/Shuffled: Fixed 5-player slot masking (5 * profile_dim)
+            new_dim = base_shape + (self.num_total_players * self.profile_dim)
+            self.current_features = np.zeros(
+                self.num_total_players * self.profile_dim, dtype=np.float32)
 
         self.observation_space = gym.spaces.Box(
             low=-np.inf,
@@ -32,24 +47,26 @@ class OpponentProfileWrapper(gym.ObservationWrapper):
             dtype=np.float32
         )
 
-        # Load all possible opponents for dynamic sampling
-        if self.mode != "baseline":
-            index_path = Path(__file__).resolve(
-            ).parent.parent.parent / "data" / "player_profiles" / "player_index.json"
-            if index_path.exists():
-                with open(index_path, 'r') as f:
-                    player_map = json.load(f)
-                self.all_opponents = list(player_map.keys())
-            else:
-                self.all_opponents = opponent_names
-
     def reset(self, **kwargs):
         # Dynamically sample and build new features on every reset if not baseline
         if self.mode in ["aware", "shuffled"]:
-            sampled_opponents = np.random.choice(
-                self.all_opponents, size=3, replace=False)
-            vectors = [get_profile_vector(name) for name in sampled_opponents]
-            features = np.concatenate(vectors).astype(np.float32)
+            # If explicit opponents were passed (for eval), lock them. Otherwise, random sample (for train).
+            if self.opponent_names:
+                active_opponents = self.opponent_names
+            else:
+                active_opponents = np.random.choice(
+                    self.all_opponents, size=3, replace=False)
+
+            # Start with an array of all zeros
+            features = np.zeros(self.num_total_players *
+                                self.profile_dim, dtype=np.float32)
+
+            # Fill only the active players' respective slots based on their assigned index (0,1,2,3,4)
+            for name in active_opponents:
+                p_idx = self.player_map[name]
+                start = p_idx * self.profile_dim
+                end = start + self.profile_dim
+                features[start:end] = get_profile_vector(name)
 
             # Ablation testing introduces random noise instead of usable signal
             if self.mode == "shuffled":

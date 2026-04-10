@@ -10,8 +10,8 @@ from sb3_contrib import MaskablePPO
 from train import make_create_masked_env
 
 
-def eval_agent(model_path: str, opponents: list, n_games: int = 500, out_filename: str = "baseline.csv"):
-    env_fn = make_create_masked_env(opponents)
+def eval_agent(model_path: str, opponents: list, mode: str = "baseline", n_games: int = 500, out_filename: str = "baseline.csv"):
+    env_fn = make_create_masked_env(opponents, mode=mode)
     env = env_fn()
 
     print(f"Loading model from {model_path}...")
@@ -76,31 +76,36 @@ def eval_agent(model_path: str, opponents: list, n_games: int = 500, out_filenam
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Evaluate Catanatron PPO Agent")
-    parser.add_argument("-p", "--players", type=str, required=True, metavar="P0,P1,P2",
-                        help="Comma-separated list of 3 player indices, eg: 0,1,2")
+    parser.add_argument("-p", "--players", type=str, default="", metavar="P0,P1,P2",
+                        help="Comma-separated list of 3 player indices, eg: 0,1,2 (Optional for aware/shuffled)")
     parser.add_argument("-m", "--mode", type=str, choices=["b", "a", "s"], default="b",
                         help="Mode: b (baseline), a (aware), s (shuffled)")
     args = parser.parse_args()
 
-    indices = sorted([int(x.strip()) for x in args.players.split(',')])
-    if len(indices) != 3:
-        raise ValueError("Must provide exactly 3 player indices.")
+    if args.mode == "b" and not args.players:
+        raise ValueError("Must provide -p for baseline mode.")
 
-    index_path = Path(__file__).resolve().parent.parent.parent / \
-        "data" / "player_profiles" / "player_index.json"
-    with open(index_path, 'r') as f:
-        player_map = json.load(f)
-
-    reverse_map = {int(v): k for k, v in player_map.items()}
     opponents = []
-    for idx in indices:
-        if idx not in reverse_map:
-            raise ValueError(
-                f"Index {idx} not valid. Valid indices: {list(reverse_map.keys())}")
-        opponents.append(reverse_map[idx])
-    
-    suffix = "".join(str(idx) for idx in indices)    
-    
+    indices = []
+    if args.players:
+        indices = sorted([int(x.strip()) for x in args.players.split(',')])
+        if len(indices) != 3:
+            raise ValueError("Must provide exactly 3 player indices.")
+
+        index_path = Path(__file__).resolve().parent.parent.parent / \
+            "data" / "player_profiles" / "player_index.json"
+        with open(index_path, 'r') as f:
+            player_map = json.load(f)
+
+        reverse_map = {int(v): k for k, v in player_map.items()}
+        for idx in indices:
+            if idx not in reverse_map:
+                raise ValueError(
+                    f"Index {idx} not valid. Valid indices: {list(reverse_map.keys())}")
+            opponents.append(reverse_map[idx])
+
+    suffix = "".join(str(idx) for idx in indices) if indices else "all"
+
     if args.mode == "b":
         prefix = "baseline"
     elif args.mode == "a":
@@ -110,7 +115,6 @@ if __name__ == "__main__":
     else:
         prefix = "baseline"
 
-
     # Ensure the model exists before running
     model_path = Path(f"models/{prefix}_ppo_{suffix}.zip")
     if model_path.exists():
@@ -118,7 +122,7 @@ if __name__ == "__main__":
         timestamp = datetime.now().strftime("%m%d_%H%M%S")
         export_name = f"{timestamp}_{prefix}_{suffix}.csv"
 
-        eval_agent(str(model_path), opponents=opponents,
+        eval_agent(str(model_path), opponents=opponents, mode=prefix,
                    n_games=500, out_filename=export_name)
     else:
         print(
