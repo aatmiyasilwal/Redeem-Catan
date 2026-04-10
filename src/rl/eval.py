@@ -117,6 +117,15 @@ if __name__ == "__main__":
 
     # Ensure the model exists before running
     model_path = Path(f"models/{prefix}_ppo_{suffix}.zip")
+
+    # Fallback to general model if evaluating specific players but only trained general
+    if not model_path.exists() and suffix != "all":
+        fallback_path = Path(f"models/{prefix}_ppo_all.zip")
+        if fallback_path.exists():
+            print(
+                f"Specific model {model_path} not found. Using generalized model: {fallback_path}")
+            model_path = fallback_path
+
     if model_path.exists():
         # Generate timestamp in MMDD_HHMMSS format
         timestamp = datetime.now().strftime("%m%d_%H%M%S")
