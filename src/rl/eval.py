@@ -78,6 +78,8 @@ if __name__ == "__main__":
         description="Evaluate Catanatron PPO Agent")
     parser.add_argument("-p", "--players", type=str, required=True, metavar="P0,P1,P2",
                         help="Comma-separated list of 3 player indices, eg: 0,1,2")
+    parser.add_argument("-m", "--mode", type=str, choices=["b", "a", "s"], default="b",
+                        help="Mode: b (baseline), a (aware), s (shuffled)")
     args = parser.parse_args()
 
     indices = sorted([int(x.strip()) for x in args.players.split(',')])
@@ -96,18 +98,28 @@ if __name__ == "__main__":
             raise ValueError(
                 f"Index {idx} not valid. Valid indices: {list(reverse_map.keys())}")
         opponents.append(reverse_map[idx])
+    
+    suffix = "".join(str(idx) for idx in indices)    
+    
+    if args.mode == "b":
+        prefix = "baseline"
+    elif args.mode == "a":
+        prefix = "aware"
+    elif args.mode == "s":
+        prefix = "shuffled"
+    else:
+        prefix = "baseline"
 
-    suffix = "".join(str(idx) for idx in indices)
 
     # Ensure the model exists before running
-    baseline_path = Path(f"models/baseline_ppo_{suffix}.zip")
-    if baseline_path.exists():
+    model_path = Path(f"models/{prefix}_ppo_{suffix}.zip")
+    if model_path.exists():
         # Generate timestamp in MMDD_HHMMSS format
         timestamp = datetime.now().strftime("%m%d_%H%M%S")
-        export_name = f"{timestamp}_baseline_{suffix}.csv"
+        export_name = f"{timestamp}_{prefix}_{suffix}.csv"
 
-        eval_agent(str(baseline_path), opponents=opponents,
+        eval_agent(str(model_path), opponents=opponents,
                    n_games=500, out_filename=export_name)
     else:
         print(
-            f"Could not find {baseline_path} - did you finish training the baseline in train.py with these players?")
+            f"Could not find {model_path} - did you finish training the {prefix} model in train.py with these players?")

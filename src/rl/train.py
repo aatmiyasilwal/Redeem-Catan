@@ -30,6 +30,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train Catanatron PPO Agent")
     parser.add_argument("-p", "--players", type=str, required=True, metavar="P0,P1,P2",
                         help="Comma-separated list of 3 player indices, eg: 0,1,2")
+    parser.add_argument("-m", "--mode", type=str, choices=["b", "a", "s"], default="b",
+                        help="Training mode: b (baseline), a (aware), s (shuffled)")
     args = parser.parse_args()
 
     indices = sorted([int(x.strip()) for x in args.players.split(',')])
@@ -64,6 +66,15 @@ if __name__ == "__main__":
 
     suffix = "".join(str(idx) for idx in indices)
 
+    if args.mode == "b":
+        prefix = "baseline"
+    elif args.mode == "a":
+        prefix = "aware"
+    elif args.mode == "s":
+        prefix = "shuffled"
+    else:
+        prefix = "baseline"
+
     # print("Starting 50k validation run...")
     # # Train Tiny PPO (Sanity Check)
     # model.learn(total_timesteps=50_000)
@@ -71,8 +82,8 @@ if __name__ == "__main__":
     # print(f"Successfully saved {models_dir / 'tiny_ppo_{suffix}.zip'}!")
 
     # training the full baseline model for 500k steps
-    model_name = f"baseline_ppo_{suffix}.zip"
-    print(f"Starting 500k baseline training for {model_name}...")
+    model_name = f"{prefix}_ppo_{suffix}.zip"
+    print(f"Starting 500k {prefix} training for {model_name}...")
     model.learn(total_timesteps=500_000)
     model.save(models_dir / model_name)
-    print(f"Full baseline completed and saved to {models_dir / model_name}!")
+    print(f"Full {prefix} completed and saved to {models_dir / model_name}!")
