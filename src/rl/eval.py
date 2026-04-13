@@ -3,10 +3,12 @@
 import argparse
 import json
 import polars as pl
+import numpy as np
 from pathlib import Path
 from datetime import datetime
 from tqdm import tqdm
 from sb3_contrib import MaskablePPO
+from stable_baselines3.common.utils import set_random_seed
 from train import make_create_masked_env
 
 
@@ -21,7 +23,8 @@ def eval_agent(model_path: str, opponents: list, mode: str = "baseline", n_games
 
     print(f"Evaluating {model_path} for {n_games} games...")
     for i in tqdm(range(n_games), desc="Games Played"):
-        obs, info = env.reset()
+        # explicitly control the seed for the initial game states to make comparison completely reproducible
+        obs, info = env.reset(seed=100 + i)
         done = False
 
         while not done:
@@ -81,6 +84,11 @@ if __name__ == "__main__":
     parser.add_argument("-m", "--mode", type=str, choices=["b", "a", "s"], default="b",
                         help="Mode: b (baseline), a (aware), s (shuffled)")
     args = parser.parse_args()
+
+    # Set random seeds for reproducibility
+    seed = 100
+    set_random_seed(seed)
+    np.random.seed(seed)
 
     if args.mode == "b" and not args.players:
         raise ValueError("Must provide -p for baseline mode.")

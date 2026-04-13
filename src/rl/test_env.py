@@ -9,7 +9,7 @@ opponents = ["AatNeverLose", "HomeofAD3005", "ZL24"]
 env = make_env(opponents)
 
 # Test that it resets and prints the shape correctly
-observation, info = env.reset()
+observation, info = env.reset(seed=100)
 print("Wrapped Environment loaded successfully!")
 print("Wrapped Observation shape:", observation.shape)
 

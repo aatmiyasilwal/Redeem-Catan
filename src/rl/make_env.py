@@ -48,6 +48,10 @@ class OpponentProfileWrapper(gym.ObservationWrapper):
         )
 
     def reset(self, **kwargs):
+        # Pass seed to standard random generators if kwargs provides it
+        if "seed" in kwargs:
+            np.random.seed(kwargs["seed"])
+
         # Dynamically sample and build new features on every reset if not baseline
         if self.mode in ["aware", "shuffled"]:
             # If explicit opponents were passed (for eval), lock them. Otherwise, random sample (for train).
