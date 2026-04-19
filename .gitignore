@@ -217,3 +217,5 @@ src/rl/models/aware_ppo_*.zip
 src/rl/models/shuffled_ppo_*.zip
 
 1004_checkpoint.md
+
+src/rl/results/*.csv

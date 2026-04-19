@@ -1,3 +1,22 @@
+-----------------------------------------
+| time/                   |             |
+|    fps                  | 1991        |
+|    iterations           | 62          |
+|    time_elapsed         | 255         |
+|    total_timesteps      | 507904      |
+| train/                  |             |
+|    approx_kl            | 0.013849256 |
+|    clip_fraction        | 0.102       |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -0.337      |
+|    explained_variance   | 0.827       |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.0166     |
+|    n_updates            | 610         |
+|    policy_gradient_loss | -0.0117     |
+|    value_loss           | 0.00323     |
+-----------------------------------------
+
 ==============================
 EVALUATION RESULTS
 ==============================
@@ -7,42 +26,86 @@ Win Rate : 43.0%
 Avg VP   : 6.00
 Saved to : results/0410_184612_shuffled_all.csv
 
----
-==============================
-EVALUATION RESULTS
-==============================
-Model    : models/aware_ppo_all.zip
-Games    : 500
-Win Rate : 49.2%
-Avg VP   : 7.28
-Saved to : results/0410_185416_aware_all.csv
-==============================
-
 ----
+
+------------------------------------------
+| time/                   |              |
+|    fps                  | 913          |
+|    iterations           | 62           |
+|    time_elapsed         | 555          |
+|    total_timesteps      | 507904       |
+| train/                  |              |
+|    approx_kl            | 0.0073535163 |
+|    clip_fraction        | 0.0647       |
+|    clip_range           | 0.2          |
+|    entropy_loss         | -0.27        |
+|    explained_variance   | 0.755        |
+|    learning_rate        | 0.0003       |
+|    loss                 | -0.00087     |
+|    n_updates            | 610          |
+|    policy_gradient_loss | -0.00825     |
+|    value_loss           | 0.00308      |
+------------------------------------------
 
 ==============================
 EVALUATION RESULTS
 ==============================
 Model    : models/aware_ppo_012.zip
 Games    : 500
-Win Rate : 50.8%
-Avg VP   : 7.05
-Saved to : results/0410_190540_aware_012.csv
+Win Rate : 50.0%
+Avg VP   : 7.24
+Saved to : results/0410_214807_aware_012.csv
 ==============================
 
 ---
+-----------------------------------------
+| time/                   |             |
+|    fps                  | 929         |
+|    iterations           | 62          |
+|    time_elapsed         | 546         |
+|    total_timesteps      | 507904      |
+| train/                  |             |
+|    approx_kl            | 0.008505886 |
+|    clip_fraction        | 0.0642      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -0.246      |
+|    explained_variance   | 0.872       |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.0237     |
+|    n_updates            | 610         |
+|    policy_gradient_loss | -0.0088     |
+|    value_loss           | 0.00243     |
+-----------------------------------------
 
 ==============================
 EVALUATION RESULTS
 ==============================
 Model    : models/baseline_ppo_012.zip
 Games    : 500
-Win Rate : 51.2%
-Avg VP   : 7.22
-Saved to : results/0410_184527_baseline_012.csv
+Win Rate : 46.8%
+Avg VP   : 7.13
+Saved to : results/0410_214753_baseline_012.csv
 ==============================
 
 ---
+-----------------------------------------
+| time/                   |             |
+|    fps                  | 918         |
+|    iterations           | 62          |
+|    time_elapsed         | 552         |
+|    total_timesteps      | 507904      |
+| train/                  |             |
+|    approx_kl            | 0.008204094 |
+|    clip_fraction        | 0.0734      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -0.304      |
+|    explained_variance   | 0.879       |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.0139     |
+|    n_updates            | 610         |
+|    policy_gradient_loss | -0.00742    |
+|    value_loss           | 0.00259     |
+-----------------------------------------
 
 ==============================
 EVALUATION RESULTS
@@ -53,3 +116,161 @@ Win Rate : 54.2%
 Avg VP   : 7.37
 Saved to : results/0410_201226_aware_013.csv
 ==============================
+
+---
+
+------------------------------------------
+| time/                   |             |
+|    fps                  | 924         |
+|    iterations           | 62          |
+|    time_elapsed         | 549         |
+|    total_timesteps      | 507904      |
+| train/                  |             |
+|    approx_kl            | 0.008382797 |
+|    clip_fraction        | 0.0666      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -0.273      |
+|    explained_variance   | 0.884       |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.00529    |
+|    n_updates            | 610         |
+|    policy_gradient_loss | -0.00981    |
+|    value_loss           | 0.00212     |
+-----------------------------------------
+
+==============================
+EVALUATION RESULTS
+==============================
+Model    : models/baseline_ppo_013.zip
+Games    : 500
+Win Rate : 48.6%
+Avg VP   : 7.07
+Saved to : results/0410_214752_baseline_013.csv
+==============================
+---
+
+-----------------------------------------
+| time/                   |             |
+|    fps                  | 950         |
+|    iterations           | 62          |
+|    time_elapsed         | 534         |
+|    total_timesteps      | 507904      |
+| train/                  |             |
+|    approx_kl            | 0.009657426 |
+|    clip_fraction        | 0.0794      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -0.323      |
+|    explained_variance   | 0.77        |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.00519    |
+|    n_updates            | 610         |
+|    policy_gradient_loss | -0.0102     |
+|    value_loss           | 0.00384     |
+-----------------------------------------
+
+==============================
+EVALUATION RESULTS
+==============================
+Model    : models/shuffled_ppo_013.zip
+Games    : 500
+Win Rate : 44.6%
+Avg VP   : 7.10
+Saved to : results/0410_214727_shuffled_013.csv
+==============================
+
+---
+
+-----------------------------------------
+| time/                   |             |
+|    fps                  | 1096        |
+|    iterations           | 62          |
+|    time_elapsed         | 463         |
+|    total_timesteps      | 507904      |
+| train/                  |             |
+|    approx_kl            | 0.009590857 |
+|    clip_fraction        | 0.0855      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -0.347      |
+|    explained_variance   | 0.93        |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.0243     |
+|    n_updates            | 610         |
+|    policy_gradient_loss | -0.0102     |
+|    value_loss           | 0.00189     |
+-----------------------------------------
+
+==============================
+EVALUATION RESULTS
+==============================
+Model    : models/aware_ppo_123.zip
+Games    : 500
+Win Rate : 45.6%
+Avg VP   : 6.83
+Saved to : results/0411_135733_aware_123.csv
+==============================
+
+---
+
+-----------------------------------------
+| time/                   |             |
+|    fps                  | 1109        |
+|    iterations           | 62          |
+|    time_elapsed         | 457         |
+|    total_timesteps      | 507904      |
+| train/                  |             |
+|    approx_kl            | 0.008278742 |
+|    clip_fraction        | 0.0714      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -0.305      |
+|    explained_variance   | 0.826       |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.0115     |
+|    n_updates            | 610         |
+|    policy_gradient_loss | -0.00822    |
+|    value_loss           | 0.00277     |
+-----------------------------------------
+
+==============================
+EVALUATION RESULTS
+==============================
+Model    : models/baseline_ppo_123.zip
+Games    : 500
+Win Rate : 50.8%
+Avg VP   : 7.32
+Saved to : results/0411_135739_baseline_123.csv
+==============================
+
+---
+
+-----------------------------------------
+| time/                   |             |
+|    fps                  | 547         |
+|    iterations           | 62          |
+|    time_elapsed         | 926         |
+|    total_timesteps      | 507904      |
+| train/                  |             |
+|    approx_kl            | 0.008179251 |
+|    clip_fraction        | 0.0687      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -0.248      |
+|    explained_variance   | 0.886       |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.0369     |
+|    n_updates            | 610         |
+|    policy_gradient_loss | -0.00817    |
+|    value_loss           | 0.00219     |
+-----------------------------------------
+
+==============================
+EVALUATION RESULTS
+==============================
+Model    : models/baseline_ppo_014.zip
+Games    : 500
+Win Rate : 52.4%
+Avg VP   : 7.41
+Saved to : results/0411_003540_baseline_014.csv
+==============================
+
+---
+
+
