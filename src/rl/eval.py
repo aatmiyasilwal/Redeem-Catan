@@ -12,7 +12,7 @@ from stable_baselines3.common.utils import set_random_seed
 from train import make_create_masked_env
 
 
-def eval_agent(model_path: str, opponents: list, mode: str = "baseline", axelrod=False, n_games: int = 500, out_filename: str = "baseline.csv"):
+def eval_agent(model_path: str, opponents: list, mode: str = "baseline", axelrod=False, n_games: int = 500, out_filename: str = "baseline.csv", bot_name: str = "bot"):
     env_fn = make_create_masked_env(opponents, mode=mode, axelrod=axelrod)
     env = env_fn()
 
@@ -20,6 +20,11 @@ def eval_agent(model_path: str, opponents: list, mode: str = "baseline", axelrod
     model = MaskablePPO.load(model_path)
 
     results = []
+
+    # Ensure log directory exists
+    log_dir = Path(__file__).resolve().parent.parent.parent / \
+        "data" / "eval_logs"
+    log_dir.mkdir(exist_ok=True, parents=True)
 
     print(f"Evaluating {model_path} for {n_games} games...")
     for i in tqdm(range(n_games), desc="Games Played"):
@@ -47,10 +52,31 @@ def eval_agent(model_path: str, opponents: list, mode: str = "baseline", axelrod
         won = (game.winning_color() == game.state.colors[0])
 
         results.append({
-            "game_id": i,
+            "game_id": i + 1,
             "won": won,
             "vp": vp
         })
+
+        # --- Write Contextual Game Log per Step 3 ---
+        p0_color = game.state.colors[0]
+        log_path = log_dir / f"{bot_name}_game_{i + 1}.txt"
+
+        with open(log_path, "w") as f:
+            f.write(f"BOT_NAME: {bot_name}\n")
+            f.write(f"GAME_ID: {i + 1}\n")
+            f.write(f"P0_COLOR: {p0_color}\n")
+            f.write(f"WINNER: {game.winning_color()}\n")
+            f.write("\n--- ACTIONS ---\n")
+            for act in game.state.actions:
+                f.write(
+                    f"[{act.color.name}] | {act.action_type.name} | {act.value}\n")
+
+            f.write("\n--- FINAL PLAYER STATE (P0) ---\n")
+            # Dump P0's final dictionary to make extracting stats (Largest Army, Longest Road, etc) trivial
+            p0_stats = {k: v for k, v in game.state.player_state.items()
+                        if k.startswith("P0_")}
+            json.dump(p0_stats, f, indent=2)
+            f.write("\n")
 
     env.close()
 
@@ -129,11 +155,13 @@ if __name__ == "__main__":
     eval_prefix = trained_prefix + "_axelrod" if axelrod_flag else trained_prefix
 
     # Ensure the model exists before running
-    model_path = Path(f"models/{eval_prefix}_ppo_{suffix}.zip")
+    # Make sure we search inside the relative models directory correctly
+    base_dir = Path(__file__).resolve().parent
+    model_path = base_dir / f"models/{eval_prefix}_ppo_{suffix}.zip"
 
     # Fallback to general model if evaluating specific players but only trained general
     if not model_path.exists() and suffix != "all":
-        fallback_path = Path(f"models/{eval_prefix}_ppo_all.zip")
+        fallback_path = base_dir / f"models/{eval_prefix}_ppo_all.zip"
         if fallback_path.exists():
             print(
                 f"Specific model {model_path} not found. Using generalized model: {fallback_path}")
@@ -145,7 +173,7 @@ if __name__ == "__main__":
         export_name = f"{timestamp}_{eval_prefix}_{suffix}.csv"
 
         eval_agent(str(model_path), opponents=opponents, mode=trained_prefix, axelrod=axelrod_flag,
-                   n_games=500, out_filename=export_name)
+                   n_games=500, out_filename=export_name, bot_name=eval_prefix)
     else:
         print(
             f"Could not find {model_path} - did you finish training the {eval_prefix} model in train.py with these players?")

@@ -218,3 +218,5 @@ src/rl/models/*.zip
 
 src/rl/results/*.csv
 past_work/catanatron
+
+data/eval_logs/*.txt
