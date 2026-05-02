@@ -144,4 +144,4 @@ if __name__ == "__main__":
         plt.close(fig)
         print(f"Loss chart saved to {plot_path}")
     else:
-        print("Warning: No loss data captured to generate plot.")
+        print("Warning: No training data captured to generate plot.")
