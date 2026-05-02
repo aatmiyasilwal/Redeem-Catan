@@ -2,12 +2,31 @@ import gymnasium as gym
 import numpy as np
 import argparse
 import json
+import matplotlib.pyplot as plt
 from pathlib import Path
 from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.utils import set_random_seed
+from stable_baselines3.common.callbacks import BaseCallback
 from sb3_contrib import MaskablePPO
 from sb3_contrib.common.wrappers import ActionMasker
 from make_env import make_env
+
+
+class LossTrackingCallback(BaseCallback):
+    """
+    Callback to track training loss at every update step.
+    """
+    def __init__(self, verbose=0):
+        super().__init__(verbose)
+        self.losses = []
+        self.timesteps = []
+
+    def _on_step(self) -> bool:
+        # SB3 logs "train/loss" at the end of every update
+        if "train/loss" in self.logger.name_to_value:
+            self.losses.append(self.logger.name_to_value["train/loss"])
+            self.timesteps.append(self.num_timesteps)
+        return True
 
 
 def mask_fn(env: gym.Env) -> np.ndarray:
@@ -64,9 +83,13 @@ if __name__ == "__main__":
                     f"Index {idx} not valid. Valid indices: {list(reverse_map.keys())}")
             opponents.append(reverse_map[idx])
 
-    # Create directory for saving models
-    models_dir = Path("models")
+    # Create directory for saving models (relative to script location)
+    models_dir = Path(__file__).parent / "models"
     models_dir.mkdir(exist_ok=True)
+
+    # Create directory for saving plots
+    plots_dir = Path(__file__).parent / "plots"
+    plots_dir.mkdir(exist_ok=True)
 
     suffix = "".join(str(idx) for idx in indices) if indices else "all"
 
@@ -95,15 +118,30 @@ if __name__ == "__main__":
     # Initialize Maskable PPO Model
     model = MaskablePPO("MlpPolicy", vec_env, verbose=1, seed=seed)
 
-    # print("Starting 50k validation run...")
-    # # Train Tiny PPO (Sanity Check)
-    # model.learn(total_timesteps=50_000)
-    # model.save(models_dir / f"tiny_ppo_{suffix}.zip")
-    # print(f"Successfully saved {models_dir / 'tiny_ppo_{suffix}.zip'}!")
+    # Initialize loss tracking callback
+    loss_callback = LossTrackingCallback()
 
     # training the full baseline model for 500k steps
     model_name = f"{prefix}_ppo_{suffix}.zip"
     print(f"Starting 500k {prefix} training for {model_name}...")
-    model.learn(total_timesteps=500_000)
+    model.learn(total_timesteps=500_000, callback=loss_callback)
     model.save(models_dir / model_name)
     print(f"Full {prefix} completed and saved to {models_dir / model_name}!")
+
+    # ── Generate Loss Plot ──────────────────────────────────────────────────
+    if loss_callback.timesteps and loss_callback.losses:
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.plot(loss_callback.timesteps, loss_callback.losses, label="Train Loss", color="blue", linewidth=1.5)
+        ax.set_title(f"Training Loss Over Time: {prefix.upper()} vs Players {suffix}")
+        ax.set_xlabel("Timesteps")
+        ax.set_ylabel("Total Loss")
+        ax.grid(True, linestyle="--", alpha=0.6)
+        ax.legend()
+
+        plot_filename = f"loss_chart_{suffix}_{prefix}.png"
+        plot_path = plots_dir / plot_filename
+        fig.savefig(plot_path, dpi=150, bbox_inches="tight")
+        plt.close(fig)
+        print(f"Loss chart saved to {plot_path}")
+    else:
+        print("Warning: No loss data captured to generate plot.")
