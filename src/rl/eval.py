@@ -66,6 +66,17 @@ def eval_agent(model_path: str, opponents: list, mode: str = "baseline", axelrod
             f.write(f"GAME_ID: {i + 1}\n")
             f.write(f"P0_COLOR: {p0_color}\n")
             f.write(f"WINNER: {game.winning_color()}\n")
+
+            f.write("\n--- BOARD LAYOUT ---\n")
+            # Dump the board layout: coordinate -> (resource string, number token)
+            # board.map.land_tiles is a dictionary mapping tuple coordinate -> LandTile
+            for coord, tile in game.state.board.map.land_tiles.items():
+                if hasattr(tile, 'resource') and hasattr(tile, 'number'):
+                    # tile.resource is already a string like "WHEAT", "ORE", etc.
+                    res_name = tile.resource if tile.resource else "DESERT"
+                    num = tile.number if tile.number is not None else 0
+                    f.write(f"HEX {coord}: {res_name} {num}\n")
+
             f.write("\n--- ACTIONS ---\n")
             for act in game.state.actions:
                 f.write(

@@ -53,3 +53,18 @@ By explicitly dumping the engine's internal dictionary, we can instantly pull ex
 - `avg_roads_built` / `avg_cities_built`
 - `avg_dev_cards_bought`
 We get all of these stat arrays for free, completely bypassing the need to calculate them manually from the action stream!
+
+#### 4. Board Layout
+To ensure we can reliably map coordinates from the action logs (like `BUILD_SETTLEMENT | 14`) back to the actual resources, we also extract the randomized board topography at the end of the log. 
+
+Extracting this required correctly accessing the internal mapping of Catanatron's board:
+```python
+--- BOARD LAYOUT ---
+for coord, tile in game.state.board.map.land_tiles.items():
+    if hasattr(tile, 'resource') and hasattr(tile, 'number'):
+        res_name = tile.resource if tile.resource else "DESERT"
+        num = tile.number if tile.number is not None else 0
+        f.write(f"HEX {coord}: {res_name} {num}\n")
+```
+
+This dumps a mapping for each game so that metrics like `top_3_starting_resources` can accurately look up the hex resources surrounding the initial settlement nodes.
