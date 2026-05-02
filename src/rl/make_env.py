@@ -4,6 +4,7 @@ import numpy as np
 import json
 from pathlib import Path
 from profiles import get_profile_vector, get_profile_dim
+from axelrod import AxelrodWrapper
 
 
 class OpponentProfileWrapper(gym.ObservationWrapper):
@@ -85,11 +86,13 @@ class OpponentProfileWrapper(gym.ObservationWrapper):
         return np.concatenate([obs, self.current_features])
 
 
-def make_env(opponent_names, mode="baseline"):
+def make_env(opponent_names, mode="baseline", axelrod=False):
     """
     Creates the Catanatron gym environment and wraps it with static opponent profiles.
     """
     # The environment ID is catanatron-v1, namespaced under catanatron_gym
     env = gym.make("catanatron_gym:catanatron-v1")
+    if axelrod:
+        env = AxelrodWrapper(env)
     env = OpponentProfileWrapper(env, opponent_names, mode=mode)
     return env

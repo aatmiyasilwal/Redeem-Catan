@@ -212,10 +212,9 @@ data/game_log_dfs/*.parquet
 data/player_profiles/*.json
 data/player_profiles/*.npy
 
-src/rl/models/baseline_ppo_*.zip
-src/rl/models/aware_ppo_*.zip
-src/rl/models/shuffled_ppo_*.zip
+src/rl/models/*.zip
 
 1004_checkpoint.md
 
 src/rl/results/*.csv
+past_work/catanatron

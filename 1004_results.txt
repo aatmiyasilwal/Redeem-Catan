@@ -273,4 +273,31 @@ Saved to : results/0411_003540_baseline_014.csv
 
 ---
 
+-----------------------------------------
+| time/                   |             |
+|    fps                  | 1193        |
+|    iterations           | 62          |
+|    time_elapsed         | 425         |
+|    total_timesteps      | 507904      |
+| train/                  |             |
+|    approx_kl            | 0.006757746 |
+|    clip_fraction        | 0.0683      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -0.326      |
+|    explained_variance   | 0.892       |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.0104     |
+|    n_updates            | 610         |
+|    policy_gradient_loss | -0.00897    |
+|    value_loss           | 0.00271     |
+-----------------------------------------
+
+==============================
+EVALUATION RESULTS
+==============================
+Model    : models/aware_axelrod_ppo_013.zip
+Games    : 500
+Win Rate : 46.4%
+Avg VP   : 7.15
+Saved to : results/0502_103417_aware_axelrod_013.csv
 

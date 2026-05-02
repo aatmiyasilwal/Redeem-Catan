@@ -12,8 +12,8 @@ from stable_baselines3.common.utils import set_random_seed
 from train import make_create_masked_env
 
 
-def eval_agent(model_path: str, opponents: list, mode: str = "baseline", n_games: int = 500, out_filename: str = "baseline.csv"):
-    env_fn = make_create_masked_env(opponents, mode=mode)
+def eval_agent(model_path: str, opponents: list, mode: str = "baseline", axelrod=False, n_games: int = 500, out_filename: str = "baseline.csv"):
+    env_fn = make_create_masked_env(opponents, mode=mode, axelrod=axelrod)
     env = env_fn()
 
     print(f"Loading model from {model_path}...")
@@ -83,6 +83,8 @@ if __name__ == "__main__":
                         help="Comma-separated list of 3 player indices, eg: 0,1,2 (Optional for aware/shuffled)")
     parser.add_argument("-m", "--mode", type=str, choices=["b", "a", "s"], default="b",
                         help="Mode: b (baseline), a (aware), s (shuffled)")
+    parser.add_argument("--axelrod", type=int, choices=[0, 1], default=0,
+                        help="Enable Axelrod's Tit-for-Tat logic (override target choice)")
     args = parser.parse_args()
 
     # Set random seeds for reproducibility
@@ -115,20 +117,23 @@ if __name__ == "__main__":
     suffix = "".join(str(idx) for idx in indices) if indices else "all"
 
     if args.mode == "b":
-        prefix = "baseline"
+        trained_prefix = "baseline"
     elif args.mode == "a":
-        prefix = "aware"
+        trained_prefix = "aware"
     elif args.mode == "s":
-        prefix = "shuffled"
+        trained_prefix = "shuffled"
     else:
-        prefix = "baseline"
+        trained_prefix = "baseline"
+
+    axelrod_flag = bool(args.axelrod)
+    eval_prefix = trained_prefix + "_axelrod" if axelrod_flag else trained_prefix
 
     # Ensure the model exists before running
-    model_path = Path(f"models/{prefix}_ppo_{suffix}.zip")
+    model_path = Path(f"models/{eval_prefix}_ppo_{suffix}.zip")
 
     # Fallback to general model if evaluating specific players but only trained general
     if not model_path.exists() and suffix != "all":
-        fallback_path = Path(f"models/{prefix}_ppo_all.zip")
+        fallback_path = Path(f"models/{eval_prefix}_ppo_all.zip")
         if fallback_path.exists():
             print(
                 f"Specific model {model_path} not found. Using generalized model: {fallback_path}")
@@ -137,10 +142,10 @@ if __name__ == "__main__":
     if model_path.exists():
         # Generate timestamp in MMDD_HHMMSS format
         timestamp = datetime.now().strftime("%m%d_%H%M%S")
-        export_name = f"{timestamp}_{prefix}_{suffix}.csv"
+        export_name = f"{timestamp}_{eval_prefix}_{suffix}.csv"
 
-        eval_agent(str(model_path), opponents=opponents, mode=prefix,
+        eval_agent(str(model_path), opponents=opponents, mode=trained_prefix, axelrod=axelrod_flag,
                    n_games=500, out_filename=export_name)
     else:
         print(
-            f"Could not find {model_path} - did you finish training the {prefix} model in train.py with these players?")
+            f"Could not find {model_path} - did you finish training the {eval_prefix} model in train.py with these players?")

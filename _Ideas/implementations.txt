@@ -1,0 +1,14 @@
+- Implement axelrod's theory (tit for tat is good)
+
+- Across games, track certain stats (see how they have changed, who it has the most similarity to)
+    - track the same stats that were used to form the dataset, see what the gameplay is like
+    - see who this bot has decided to learn the most from
+
+
+- Visualize gameplay
+
+- Issues with implementing catan bot in a live setting
+    - option: play in catanatron native environment
+
+- Presentation: consult ai to construct
+

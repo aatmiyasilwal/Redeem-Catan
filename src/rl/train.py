@@ -18,10 +18,10 @@ def mask_fn(env: gym.Env) -> np.ndarray:
     return mask
 
 
-def make_create_masked_env(opponents, mode="baseline"):
+def make_create_masked_env(opponents, mode="baseline", axelrod=False):
     """Factory builder for creating masked envs with specific opponents."""
     def _create_masked_env():
-        env = make_env(opponents, mode=mode)
+        env = make_env(opponents, mode=mode, axelrod=axelrod)
         env = ActionMasker(env, mask_fn)
         return env
     return _create_masked_env
@@ -33,6 +33,8 @@ if __name__ == "__main__":
                         help="Comma-separated list of 3 player indices, eg: 0,1,2 (Optional for aware/shuffled)")
     parser.add_argument("-m", "--mode", type=str, choices=["b", "a", "s"], default="b",
                         help="Training mode: b (baseline), a (aware), s (shuffled)")
+    parser.add_argument("--axelrod", type=int, choices=[0, 1], default=0,
+                        help="Enable Axelrod's Tit-for-Tat logic (override target choice)")
     args = parser.parse_args()
 
     # Set random seeds for reproducibility
@@ -77,10 +79,16 @@ if __name__ == "__main__":
     else:
         prefix = "baseline"
 
+    axelrod_flag = bool(args.axelrod)
+    if axelrod_flag:
+        prefix += "_axelrod"
+
     print(
         f"Initializing environment with opponents: {opponents} (mode: {prefix})...")
+    
     # Vectorize the environment (running 4 parallel environments speeds up training drastically)
-    env_fn = make_create_masked_env(opponents, mode=prefix)
+    env_fn = make_create_masked_env(
+        opponents, mode=prefix.replace("_axelrod", ""), axelrod=axelrod_flag)
     vec_env = DummyVecEnv([env_fn for _ in range(4)])
 
     print("Loading Maskable PPO Model...")
