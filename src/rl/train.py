@@ -29,7 +29,7 @@ def make_create_masked_env(opponents, mode="baseline", axelrod=False):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train Catanatron PPO Agent")
-    parser.add_argument("-p", "--players", type=str, default="", metavar="P0,P1,P2",
+    parser.add_argument("-p", "--players", type=str, default="0,1,3", metavar="P0,P1,P2",
                         help="Comma-separated list of 3 player indices, eg: 0,1,2 (Optional for aware/shuffled)")
     parser.add_argument("-m", "--mode", type=str, choices=["b", "a", "s"], default="b",
                         help="Training mode: b (baseline), a (aware), s (shuffled)")
