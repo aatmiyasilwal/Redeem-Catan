@@ -46,56 +46,7 @@ Redeem-Catan/
 ├── pyproject.toml           # Dependencies managed via uv
 └── game_logs.txt            # Archive of unique game replays
 
-```markdown
-# 🎲 Redeem-Catan: Opponent-Aware RL for Settlers of Catan
-
-**Redeem-Catan** is a reinforcement learning project that investigates whether incorporating human behavioral profiling into the observation space of a PPO agent improves strategic decision-making in *Settlers of Catan*. Unlike traditional bots that optimize purely for game mechanics, this agent adapts its policy based on opponent tendencies (trading aggression, hoarding, robber placement) derived from historical gameplay data.
-
----
-
-## 🏗️ Architecture
-
-The project is built on a multi-stage pipeline:
-1.  **Data Mining:** Scraping raw colonist.io replays to extract player action logs.
-2.  **Behavioral Profiling:** Aggregating per-game statistics into 19-dimensional player profiles.
-3.  **Opponent-Aware Training:** Injecting these profiles into the RL observation space via custom Gymnasium wrappers.
-4.  **Evaluation:** Running 500-game sweeps against various bot configurations and analyzing performance via statistical clustering.
-
----
-
-## 📂 Project Structure
-
-```text
-Redeem-Catan/
-├── _Ideas/                  # Sprint plans, technical deep-dives, and design docs
-├── data/
-│   ├── raw_divs/            # Raw scraped data from colonist.io replays
-│   ├── game_log_dfs/        # Consolidated per-game parquet files (4-player stats)
-│   ├── player_profiles/     # ML-ready profile vectors and index mappings
-│   └── eval_logs/           # 500-game textual logs generated during evaluation
-├── scripts/
-│   ├── eval_pipeline.sh     # Automated training, evaluation, and parsing pipeline
-│   └── play_gui.sh          # Docker-based GUI launcher for visual inspection
-├── src/
-│   ├── scraper/             # JS scripts for colonist.io data extraction
-│   ├── eda/                 # Data preparation and exploratory analysis
-│   │   ├── data_pipeliner.ipynb
-│   │   ├── player_profiler.ipynb
-│   │   └── eda.ipynb
-│   ├── rl/                  # Core RL logic
-│   │   ├── train.py         # PPO training entry point
-│   │   ├── eval.py          # Evaluation entry point
-│   │   ├── make_env.py      # Environment wrappers (Profile/Axelrod)
-│   │   ├── axelrod.py       # Tit-for-Tat logic wrapper
-│   │   ├── profiles.py      # Profile vector manager
-│   │   └── models/          # Saved .zip models
-│   └── analysis/            # Post-eval clustering
-│       ├── parse_logs.py
-│       └── cluster_bots.ipynb
-├── pyproject.toml           # Dependencies managed via uv
-└── game_logs.txt            # Archive of unique game replays
 ```
-
 ---
 
 ## 🚀 Quick Start
