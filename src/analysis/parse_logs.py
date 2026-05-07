@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Parse evaluation .txt logs from data/eval_logs/ and produce player profile
 parquet files compatible with the output of player_profiler.ipynb.
